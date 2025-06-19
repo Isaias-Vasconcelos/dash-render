@@ -4,7 +4,19 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Title>DashRender</Title>
+    <Authors>Isaías Vasconcelos</Authors>
+    <Description>DashRender é uma biblioteca .NET que permite gerar dashboards gráficos como imagens (PNG) ou Base64 utilizando o SkiaSharp. Ideal para cenários onde você precisa embutir gráficos em e-mails, relatórios PDF, APIs ou aplicações web.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Isaias-Vasconcelos/dash-render</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="3.119.0" />
