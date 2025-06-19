@@ -3,7 +3,7 @@
 
 **DashRender** é uma biblioteca .NET que permite gerar **dashboards gráficos como imagens (PNG)** utilizando o **SkiaSharp**. Ideal para cenários onde você precisa embutir gráficos em e-mails, relatórios PDF, APIs ou aplicações web.
 
-> Este pacote foi criado para facilitar a geração de dashboards simples, sem necessidade de ferramentas externas de BI.
+> Criado para gerar dashboards simples e rápidos, sem necessidade de ferramentas externas de BI.
 
 ---
 
@@ -23,30 +23,63 @@ Gerenciador de Pacotes NuGet > Procurar > DashRender
 
 ## ✅ Como Funciona
 
-Você precisa montar um **objeto de entrada** do tipo `DashboardDefinition`, que representa o seu dashboard. Nele você define:
+Você precisa montar um **objeto de entrada** do tipo `DashboardDefinition`, que representa o seu dashboard.
+
+### Estrutura de `DashboardDefinition`
 
 | Propriedade | Tipo | Descrição |
 |------------|----|----|
 | `Title` | string | Título principal do dashboard |
 | `Subtitle` | string | Subtítulo (ex: período ou região) |
-| `Charts` | List<ChartDefinition> | Lista de gráficos que compõem o dashboard |
+| `Charts` | List<ChartDefinition> | Lista de gráficos |
+| `Colors` | SKColor[] (Opcional) | Paleta de cores personalizada para os gráficos |
 
-Cada **ChartDefinition** define um gráfico individual:
+---
 
-| Propriedade | Tipo | Descrição |
-|------------|----|----|
-| `Title` | string | Título do gráfico |
-| `ChartType` | ChartType | Tipo de gráfico (Pie, VerticalBar, HorizontalBar) |
-| `DisplayLegend` | bool | Exibir ou não a legenda |
-| `DataPoints` | List<DataPoint> | Os dados que vão alimentar o gráfico |
+### Detalhes sobre as cores (`Colors`)
 
-Cada **DataPoint** é uma entrada no gráfico:
+- **Se você não informar o array `Colors`**, a biblioteca automaticamente irá gerar uma sequência de **cores randômicas** a partir de uma paleta completa de cores baseadas no padrão `SkiaSharp.SKColors`.
 
-| Propriedade | Tipo | Exemplo | Descrição |
-|------------|----|----|----|
-| `Label` | string | `"Bahia"` | Nome da categoria |
-| `Value` | decimal | `2500.75m` | Valor numérico |
-| `Unit` | string | `"R$"`, `"%"` | Unidade opcional |
+### 📋 Exemplos de Cores Disponíveis
+
+- Red
+- Blue
+- Green
+- Orange
+- Yellow
+- Purple
+- Cyan
+- Magenta
+- DarkGreen
+- Gold
+- RoyalBlue
+- ... *(veja todas as demais cores disponíveis no namespace `SkiaSharp.SKColors`)*
+
+---
+
+## 📂 Exportando para Imagem
+
+Se quiser gerar a imagem, informe o caminho de saída.
+
+### Exemplo de Uso:
+
+```csharp
+DashboardImageRenderer.ExportDashboardImageToFile(dashboard, @"C:\Relatorios\dashboard-vendas.png");
+```
+
+### Exemplo de Resultado:
+
+![dashboard_grid](https://github.com/user-attachments/assets/8f7c0b2e-7dc9-4053-aa15-ad2226ca895b)
+
+---
+
+## 🖼️ Exportando como Base64
+
+Se quiser gerar como Base64 (útil para envio via API ou embutir em HTML):
+
+```csharp
+string base64Image = DashboardImageRenderer.ExportDashboardImageAsBase64(dashboard);
+```
 
 ---
 
@@ -54,73 +87,76 @@ Cada **DataPoint** é uma entrada no gráfico:
 
 ```csharp
 using DashRender;
+using SkiaSharp;
 
 var dashboard = new DashboardDefinition
 {
-    Title = "Dashboard de Vendas",
-    Subtitle = "Relatório Semanal",
-    Charts = new List<ChartDefinition>
+    Title = "Dashboard de Performance Comercial",
+    Subtitle = "Resultados Consolidados - 1º Semestre 2025",
+    Colors = new SKColor[]
     {
+        SKColors.Red,
+        SKColors.Green,
+        SKColors.Blue,
+        SKColors.Orange
+    },
+    Charts =
+    [
         new()
         {
-            Title = "Vendas por Região",
+            Title = "Vendas por Filial (R$)",
             ChartType = ChartType.Pie,
             DisplayLegend = true,
-            DataPoints = new List<DataPoint>
-            {
-                new() { Label = "Nordeste", Value = 2500.50m, Unit = "R$" },
-                new() { Label = "Sudeste", Value = 1800.75m, Unit = "R$" },
-                new() { Label = "Sul", Value = 1200.25m, Unit = "R$" }
-            }
+            DataPoints =
+            [
+                new() { Label = "São Paulo", Value = 35200.75m, Unit = "R$" },
+                new() { Label = "Rio de Janeiro", Value = 27450.30m, Unit = "R$" },
+                new() { Label = "Bahia", Value = 19870.00m, Unit = "R$" },
+                new() { Label = "Minas Gerais", Value = 15800.90m, Unit = "R$" }
+            ]
         },
         new()
         {
-            Title = "Performance por Produto",
+            Title = "Crescimento Mensal de Vendas (R$)",
             ChartType = ChartType.VerticalBar,
             DisplayLegend = true,
-            DataPoints = new List<DataPoint>
-            {
-                new() { Label = "Produto A", Value = 1500.10m, Unit = "%" },
-                new() { Label = "Produto B", Value = 2500.20m, Unit = "%" },
-                new() { Label = "Produto C", Value = 1000.30m, Unit = "%" }
-            }
+            DataPoints =
+            [
+                new() { Label = "Janeiro", Value = 12000m, Unit = "R$" },
+                new() { Label = "Fevereiro", Value = 14500m, Unit = "R$" },
+                new() { Label = "Março", Value = 13200m, Unit = "R$" },
+                new() { Label = "Abril", Value = 16000m, Unit = "R$" },
+                new() { Label = "Maio", Value = 17050m, Unit = "R$" },
+                new() { Label = "Junho", Value = 18900m, Unit = "R$" }
+            ]
         }
-    }
+    ]
 };
 
-// Gerar imagem como arquivo PNG
-DashboardRenderer.ExportToFile(dashboard, "caminho/output/dashboard.png");
+// Exporta como arquivo
+DashboardImageRenderer.ExportDashboardImageToFile(dashboard, @"C:\Relatorios\dashboard-performance.png");
 
-// Ou gerar como Base64 string
-string base64Image = DashboardRenderer.ExportToBase64(dashboard);
+// Ou exporta como Base64
+string base64 = DashboardImageRenderer.ExportDashboardImageAsBase64(dashboard);
 ```
 
 ---
 
-## ✨ Principais Métodos da Biblioteca
+## 🎨 Tipos de Gráfico Suportados (`ChartType`)
 
-| Método | Descrição |
-|----|----|
-| `ExportToFile(DashboardDefinition dashboard, string outputFilePath)` | Gera a imagem e salva em disco como `.png`. |
-| `ExportToBase64(DashboardDefinition dashboard)` | Retorna a imagem gerada como string Base64. Ideal para envio via API ou email. |
-
----
-
-## 🎨 Tipos de Gráfico Suportados (ChartType)
-
-- **Pie**: Gráfico de pizza
-- **VerticalBar**: Barras verticais
-- **HorizontalBar**: Barras horizontais
+- **Pie** → Gráfico de Pizza
+- **VerticalBar** → Barras Verticais
+- **HorizontalBar** → Barras Horizontais
 
 ---
 
 ## 📌 Requisitos
 
 - .NET 6.0 ou superior
-- SkiaSharp (já incluído como dependência via NuGet)
+- SkiaSharp (adicionado automaticamente via NuGet)
 
 ---
 
 ## 🤝 Contribuições
 
-Pull requests e sugestões são bem-vindos.
+Pull Requests, melhorias de design ou novos tipos de gráfico são super bem-vindos!
