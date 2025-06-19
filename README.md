@@ -1,7 +1,7 @@
 
 # 📊 DashRender
 
-**DashRender** é uma biblioteca .NET que permite gerar **dashboards gráficos como imagens (PNG)** utilizando o **SkiaSharp**. Ideal para cenários onde você precisa embutir gráficos em e-mails, relatórios PDF, APIs ou aplicações web.
+**DashRender** é uma biblioteca .NET que permite gerar **dashboards gráficos como imagens (PNG) ou Base64** utilizando o **SkiaSharp**. Ideal para cenários onde você precisa embutir gráficos em e-mails, relatórios PDF, APIs ou aplicações web.
 
 > Criado para gerar dashboards simples e rápidos, sem necessidade de ferramentas externas de BI.
 
