@@ -53,7 +53,7 @@ Cada **DataPoint** é uma entrada no gráfico:
 ## 🛠️ Exemplo Completo de Uso
 
 ```csharp
-using SkiaDashboardRenderer;
+using DashRender;
 
 var dashboard = new DashboardDefinition
 {
